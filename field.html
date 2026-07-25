@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>دفترچه تلفن داخلی</title>
+  <style>
+    @font-face {
+      font-family: "IRANSans";
+      src: url("./IRANSans.ttf.ttf") format("truetype");
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #eef3f8;
+      --navy: #0f2747;
+      --line: #d8e1ec;
+      --radius-xl: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: linear-gradient(180deg, #eef3f8 0%, #f5f8fc 100%);
+      color: #17212b;
+      font-family: IRANSans, Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      padding: 20px;
+    }
+
+    .page {
+      width: min(1000px, 100%);
+      margin: 0 auto;
+    }
+
+    .shell {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 10px 30px rgba(15, 39, 71, 0.05);
+      overflow: hidden;
+    }
+
+    .hero {
+      background: var(--navy);
+      color: #fff;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      opacity: 0.8;
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr 200px 120px;
+      gap: 15px;
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      align-items: start;
+    }
+
+    .field,
+    .button {
+      height: 45px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 0 15px;
+      font-family: inherit;
+      outline: none;
+      background-color: #fff;
+    }
+
+    .field {
+      width: 100%;
+    }
+
+    .button {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown {
+      position: relative;
+      width: 100%;
+    }
+
+    .dropdown-input {
+      width: 100%;
+      height: 45px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 0 15px;
+      font-family: inherit;
+      outline: none;
+      background-color: #fff;
+      text-align: center;
+    }
+
+    .dropdown-list {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      left: 0;
+      background: #fff;
+      border: 1px solid #d8e1ec;
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(15, 39, 71, 0.08);
+      max-height: 260px;
+      overflow-y: auto;
+      z-index: 20;
+      display: none;
+    }
+
+    .dropdown.open .dropdown-list {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 11px 14px;
+      text-align: center;
+      cursor: pointer;
+      border-bottom: 1px solid #edf1f5;
+      font-size: 14px;
+    }
+
+    .dropdown-item:hover {
+      background: #f4f7fa;
+      color: var(--navy);
+    }
+
+    .dropdown-empty {
+      padding: 11px 14px;
+      text-align: center;
+      color: #888;
+      font-style: italic;
+    }
+
+    .summary {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 15px;
+      background: #f9f9f9;
+      flex-wrap: wrap;
+    }
+
+    .summary-chip {
+      background: #fff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid #ddd;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .sections {
+      padding: 20px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .dept-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .dept-header {
+      background: var(--navy);
+      color: #fff;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dept-title {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    thead th {
+      background: #f4f7fa;
+      color: var(--navy);
+      padding: 12px;
+      font-size: 13px;
+      border-bottom: 2px solid #e0e6ed;
+      text-align: center;
+    }
+
+    tbody td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .tel-link {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+
+    .phone {
+      direction: ltr;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      display: none;
+      color: #888;
+    }
+
+    @media (max-width: 600px) {
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="shell">
+      <header class="hero">
+        <h1>دفترچه تلفن داخلی</h1>
+        <p>جست‌وجوی سریع داخلی و شماره مستقیم واحدها و همکاران</p>
+      </header>
+      <section class="toolbar">
+        <input id="searchInput" class="field" type="search" placeholder="جستجو بر اساس نام، داخلی یا شماره..." />
+        <div id="deptDropdown" class="dropdown">
+          <input id="deptFilter" class="dropdown-input" type="text" placeholder="همه بخش‌ها" autocomplete="off" />
+          <div id="deptList" class="dropdown-list"></div>
+        </div>
+        <button id="clearBtn" class="button">پاک کردن</button>
+      </section>
+<section class="summary">
+  <div class="summary-chip">تعداد نفرات: <span id="resultCount">0</span> نفر</div>
+  <div class="summary-chip">تعداد بخش‌ها: <span id="visibleDeptCount">0</span> بخش</div>
+  <div class="summary-chip">آخرین بروزرسانی: 1405/05/03</div>
+</section>
+      <section id="sections" class="sections"></section>
+      <div id="emptyState" class="empty-state">نتیجه‌ای یافت نشد.</div>
+    </section>
+  </main>
+
+  <script>
+    const rawData = [
+      { "نام": "انبار A", "داخلی": "200", "شماره": "---", "بخش": "انبار" },
+      { "نام": "انبار A", "داخلی": "201", "شماره": "05191003114", "بخش": "انبار" },
+      { "نام": "انبار A", "داخلی": "202", "شماره": "---", "بخش": "انبار" },
+      { "نام": "انبار A", "داخلی": "203", "شماره": "---", "بخش": "انبار" },
+      { "نام": "آقای مجتبی فاضلی نژاد", "داخلی": "213", "شماره": "---", "بخش": "انبار" },
+      { "نام": "آقای سجاد پورسعادت", "داخلی": "220", "شماره": "---", "بخش": "انبار" },
+      { "نام": "خانم یگانه نصیرایی", "داخلی": "121", "شماره": "05191003115", "بخش": "بازرگانی فروش" },
+      { "نام": "خانم ریحانه زمانی ", "داخلی": "154", "شماره": "---", "بخش": "بازرگانی فروش" },
+      { "نام": "آقای محمد جواد مشتاق", "داخلی": "123", "شماره": "---", "بخش": "بازرگانی فروش" },
+      { "نام": "خانم ثریا ثوابی", "داخلی": "124", "شماره": "---", "بخش": "بازرگانی فروش" },
+      { "نام": "آقای مرتضی رمضانی", "داخلی": "921", "شماره": "09153215301", "بخش": "توزیع" },
+      { "نام": "آقای مجتبی یزدانی", "داخلی": "955", "شماره": "09357982861", "بخش": "توزیع" },
+      { "نام": "آقای امیر شیری", "داخلی": "917", "شماره": "09152595903", "بخش": "توزیع" },
+      { "نام": "آقای جواد گلستانی", "داخلی": "961", "شماره": "09152772259", "بخش": "توزیع" },
+      { "نام": "آقای ایمان سلامت", "داخلی": "918", "شماره": "09158291209", "بخش": "توزیع" },
+      { "نام": "آقای احمد علیپور", "داخلی": "916", "شماره": "09383941380", "بخش": "توزیع" },
+      { "نام": "آقای علی پرادین", "داخلی": "959", "شماره": "09221026620", "بخش": "توزیع" },
+      { "نام": "آقای رضا خاکزادی", "داخلی": "964", "شماره": "09157177110", "بخش": "توزیع" },
+      { "نام": "آقای مصطفی نصیری", "داخلی": "962", "شماره": "09150080209", "بخش": "توزیع" },
+      { "نام": "آقای مهدی کاظمی", "داخلی": "967", "شماره": "09152210953", "بخش": "توزیع" },
+      { "نام": "آقای فرشید بی نیاز", "داخلی": "970", "شماره": "09371372781", "بخش": "توزیع" },
+      { "نام": "آقای محمدرضا جامی", "داخلی": "903", "شماره": "09156512385", "بخش": "کارشناس فروش" },
+      { "نام": "آقای میلاد خوشبخت", "داخلی": "928", "شماره": "09031200766", "بخش": "کارشناس فروش" },
+      { "نام": "آقای کوروش حسابی", "داخلی": "935", "شماره": "09158081769", "بخش": "کارشناس فروش" },
+      { "نام": "آقای علی باسلیقه", "داخلی": "938", "شماره": "09353588438", "بخش": "کارشناس فروش" },
+      { "نام": "آقای علی محب زاده", "داخلی": "940", "شماره": "09155099827", "بخش": "کارشناس فروش" },
+      { "نام": "خانم عالیه جامی", "داخلی": "908", "شماره": "09157093556", "بخش": "کارشناس فروش" },
+      { "نام": "خانم نسرین بران", "داخلی": "936", "شماره": "09153211255", "بخش": "کارشناس فروش" },
+      { "نام": "آقای کاظم مختاری", "داخلی": "948", "شماره": "09034887721", "بخش": "کارشناس فروش" },
+      { "نام": "آقای محمدرضا راک", "داخلی": "945", "شماره": "09331028409", "بخش": "کارشناس فروش" },
+      { "نام": "آقای محمد درزابی زاک", "داخلی": "949", "شماره": "09053587398", "بخش": "کارشناس فروش" },
+      { "نام": "آقای حسین تابیده", "داخلی": "944", "شماره": "09370366172", "بخش": "کارشناس فروش" },
+      { "نام": "آقای آرمان صابری", "داخلی": "925", "شماره": "09352192629", "بخش": "کارشناس فروش" },
+      { "نام": "آقای محمدرضا خانی", "داخلی": "942", "شماره": "09357417731", "بخش": "کارشناس فروش" },
+      { "نام": "آقای سجاد بوژمهرانی", "داخلی": "952", "شماره": "09337932687", "بخش": "کارشناس فروش" },
+      { "نام": "آقای امیرمحمد فرداد", "داخلی": "954", "شماره": "09105015159", "بخش": "کارشناس فروش" },
+      { "نام": "آقای مهدی عبادزاده", "داخلی": "902", "شماره": "09158988573", "بخش": "کارشناس فروش" },
+      { "نام": "آقای حمیدرضا میرشاهی", "داخلی": "956", "شماره": "09368263361", "بخش": "کارشناس فروش" },
+      { "نام": "آقای حسین رمضانی", "داخلی": "910", "شماره": "09155585101", "بخش": "کارشناس فروش" },
+      { "نام": "خانم آزاده گلزاده", "داخلی": "947", "شماره": "09159052162", "بخش": "کارشناس فروش" },
+      { "نام": "آقای یونس عباس نژاد", "داخلی": "953", "شماره": "09374485959", "بخش": "کارشناس فروش" },
+      { "نام": "خانم سعیده یکتا", "داخلی": "913", "شماره": "09157711859", "بخش": "کارشناس فروش" },
+      { "نام": "آقای محمود سعیدی ", "داخلی": "958", "شماره": "09038037089", "بخش": "کارشناس فروش" },
+      { "نام": "آقای مهدی علوی", "داخلی": "957", "شماره": "09152364085", "بخش": "کارشناس فروش" },
+      { "نام": "آقای امیر حسین کرمانی", "داخلی": "941", "شماره": "09335094459", "بخش": "کارشناس فروش" },
+      { "نام": "آقای حسن دو دل", "داخلی": "946", "شماره": "09351738277", "بخش": "کارشناس فروش" },
+      { "نام": "آقای مسعود مجیدی", "داخلی": "170", "شماره": "---", "بخش": "لجستیک" },
+      { "نام": "خانم فاطمه زوار", "داخلی": "161", "شماره": "---", "بخش": "منابع انسانی" },
+      { "نام": "آقای مهدی نداف", "داخلی": "303", "شماره": "---", "بخش": "مدیریت" },
+      { "نام": "خانم مریم اصغری", "داخلی": "160", "شماره": "09018093292", "بخش": "مدیریت" },
+      { "نام": "خانم فاطمه غلامی", "داخلی": "120", "شماره": "09153264515", "بخش": "مدیریت" },
+      { "نام": "خانم ستاره جلائیان", "داخلی": "155", "شماره": "09153262535", "بخش": "مدیریت" },
+      { "نام": "خانم زینب باقری", "داخلی": "934", "شماره": "---", "بخش": "مسئول دفتر" },
+      { "نام": "خانم نسرین عباسپور", "داخلی": "159", "شماره": "---", "بخش": "بازرگانی فروش" }
+    ];
+
+    const searchInput = document.getElementById("searchInput");
+    const deptFilter = document.getElementById("deptFilter");
+    const deptDropdown = document.getElementById("deptDropdown");
+    const deptList = document.getElementById("deptList");
+    const sectionsEl = document.getElementById("sections");
+    const emptyStateEl = document.getElementById("emptyState");
+    const resultCountEl = document.getElementById("resultCount");
+    const visibleDeptCountEl = document.getElementById("visibleDeptCount");
+    const clearBtn = document.getElementById("clearBtn");
+
+    const depts = [...new Set(rawData.map((item) => item.بخش))].sort();
+
+    function normalize(value) { return String(value || "").trim().toLowerCase(); }
+
+    function getExactDeptMatch(value) {
+      const query = normalize(value);
+      const matchedDept = depts.find(dept => normalize(dept) === query);
+      return matchedDept || "";
+    }
+
+    function buildDeptList(filterText = "") {
+      const query = normalize(filterText);
+      const filteredDepts = depts.filter(dept => normalize(dept).includes(query));
+      let itemsHtml = '';
+      if (filteredDepts.length === 0 && query !== "") {
+        itemsHtml = '<div class="dropdown-empty">بخشی یافت نشد</div>';
+      } else {
+        const displayDepts = ["همه بخش‌ها", ...filteredDepts];
+        itemsHtml = displayDepts.map(item => {
+          const value = item === "همه بخش‌ها" ? "" : item;
+          return `<div class="dropdown-item" data-value="${value}">${item}</div>`;
+        }).join("");
+      }
+      deptList.innerHTML = itemsHtml;
+    }
+
+    function openDropdown() { deptDropdown.classList.add("open"); }
+    function closeDropdown() { deptDropdown.classList.remove("open"); }
+    function setDeptValue(value) { deptFilter.value = value; render(); closeDropdown(); }
+
+    function render() {
+      const query = normalize(searchInput.value);
+      const exactDept = getExactDeptMatch(deptFilter.value);
+      let filteredData = rawData.filter((i) => {
+        const matchesSearch = query === "" || normalize(i.نام).includes(query) || normalize(i.داخلی).includes(query) || normalize(i.شماره).includes(query);
+        const matchesDept = exactDept === "" || normalize(i.بخش) === normalize(exactDept);
+        return matchesSearch && matchesDept;
+      });
+      const groupedByDept = filteredData.reduce((acc, item) => { (acc[item.بخش] = acc[item.بخش] || []).push(item); return acc; }, {});
+      const sortedDepts = Object.keys(groupedByDept).sort();
+      sectionsEl.innerHTML = "";
+      if (filteredData.length === 0) { emptyStateEl.style.display = "block"; } else {
+        emptyStateEl.style.display = "none";
+        sortedDepts.forEach((deptName) => {
+          const deptData = groupedByDept[deptName];
+          const card = document.createElement("article");
+          card.classList.add("dept-card");
+          let tableRowsHtml = deptData.map((i) => `<tr>
+    <td>${i.نام}</td>
+    <td>${i.داخلی === "---" ? "---" : `<a href="tel:+985191003113,${i.داخلی}" class="tel-link"><span class="phone">${i.داخلی}</span></a>`}</td>
+    <td>${i.شماره === "---" ? "---" : `<a href="tel:${String(i.شماره).replace(/\s+/g, '')}" class="tel-link"><span class="phone">${i.شماره}</span></a>`}</td>
+</tr>`).join("");
+          card.innerHTML = `<div class="dept-header"><h2 class="dept-title">${deptName}</h2></div><table><thead><tr><th>نام</th><th>داخلی</th><th>شماره مستقیم</th></tr></thead><tbody>${tableRowsHtml}</tbody></table>`;
+          sectionsEl.appendChild(card);
+        });
+      }
+      resultCountEl.textContent = filteredData.length;
+      visibleDeptCountEl.textContent = sortedDepts.length;
+    }
+
+    searchInput.addEventListener("input", render);
+    deptFilter.addEventListener("focus", () => { buildDeptList(deptFilter.value); openDropdown(); });
+    deptFilter.addEventListener("input", () => { buildDeptList(deptFilter.value); openDropdown(); });
+    deptFilter.addEventListener("click", (e) => { if (!deptDropdown.classList.contains("open")) { buildDeptList(deptFilter.value); openDropdown(); } e.stopPropagation(); });
+    deptList.addEventListener("click", (event) => { const item = event.target.closest(".dropdown-item"); if (item) setDeptValue(item.dataset.value); });
+    document.addEventListener("click", (event) => { if (!deptDropdown.contains(event.target)) closeDropdown(); });
+    clearBtn.addEventListener("click", () => { searchInput.value = ""; deptFilter.value = ""; buildDeptList(""); render(); closeDropdown(); });
+    buildDeptList("");
+    render();
+  </script>
+</body>
+
+</html>
